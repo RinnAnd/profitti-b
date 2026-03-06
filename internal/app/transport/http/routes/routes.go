@@ -6,12 +6,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type handlers struct {
-	userHandler users.UserHandler
+type Routes struct {
+	UserHandler users.UserHandler
 }
 
-func (h *handlers) Init(s *gin.Engine) {
+func (h *Routes) Init(s *gin.Engine) {
 	// Users
 	userGroup := s.Group("/users")
-	userGroup.POST("/register", h.userHandler.Register)
+	userGroup.POST("/register", h.UserHandler.Register)
 }

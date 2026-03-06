@@ -7,10 +7,6 @@ import (
 	service "profitti/internal/infra/service/users"
 )
 
-type Setup struct {
-	UserHandler users.UserHandler
-}
-
 func User(db *sql.DB) *Setup {
 	userRepository := user.New(db)
 	userService := service.New(userRepository)
