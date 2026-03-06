@@ -10,8 +10,8 @@ type Setup struct {
 }
 
 func Build(db *sql.DB) *Setup {
-	user := User(db)
-	// expense := Expense(db)
+	setup := &Setup{}
+	User(db, setup)
 
-	return user
+	return setup
 }
