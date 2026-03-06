@@ -1,7 +1,6 @@
 package users
 
 import (
-	"fmt"
 	"net/http"
 	"profitti/internal/app/dto"
 	"profitti/internal/infra/service/users"
@@ -33,7 +32,19 @@ func (h *handler) Register(c *gin.Context) {
 		return
 	}
 
-	fmt.Println(req)
+	res, err := h.srv.Register(c, req.Domain())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, dto.HttpError{
+			Status:  http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, map[string]string{
+		"status":  "201",
+		"user_id": res,
+	})
 }
 
 func decodeRequest(c *gin.Context) (*dto.User, error) {

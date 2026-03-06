@@ -1,6 +1,8 @@
 -- +goose Up
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE users (
-  id uuid NOT NULL primary key,
+  id uuid NOT NULL primary key DEFAULT uuid_generate_v4 (),
   username VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
@@ -8,29 +10,29 @@ CREATE TABLE users (
 );
 
 CREATE TABLE currencies (
-  id uuid NOT NULL primary key,
+  id uuid NOT NULL primary key DEFAULT uuid_generate_v4 (),
   name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE financials (
-  id uuid NOT NULL primary key,
+  id uuid NOT NULL primary key DEFAULT uuid_generate_v4 (),
   user_id uuid NOT NULL references users (id),
   currency_id uuid NOT NULL references currencies (id)
 );
 
 CREATE TABLE recurrence_type (
-  id uuid NOT NULL primary key,
+  id uuid NOT NULL primary key DEFAULT uuid_generate_v4 (),
   type VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE partnership (
-  id uuid NOT NULL primary key,
+  id uuid NOT NULL primary key DEFAULT uuid_generate_v4 (),
   users jsonb NOT NULL,
   currency_id uuid NOT NULL references currencies (id)
 );
 
 CREATE TABLE expenses (
-  id uuid NOT NULL primary key,
+  id uuid NOT NULL primary key DEFAULT uuid_generate_v4 (),
   financial_id uuid references financials (id),
   partnership_id uuid references partnership (id),
   name VARCHAR(255) NOT NULL,
@@ -42,7 +44,7 @@ CREATE TABLE expenses (
 );
 
 CREATE TABLE shared_expense (
-  id uuid NOT NULL primary key,
+  id uuid NOT NULL primary key DEFAULT uuid_generate_v4 (),
   expense_id uuid NOT NULL references expenses (id),
   user_id uuid NOT NULL references users (id),
   percentage DECIMAL NOT NULL,
@@ -51,7 +53,7 @@ CREATE TABLE shared_expense (
 );
 
 CREATE TABLE income (
-  id uuid NOT NULL primary key,
+  id uuid NOT NULL primary key DEFAULT uuid_generate_v4 (),
   amount DECIMAL,
   currency_id uuid NOT NULL references currencies (id),
   recurrence uuid references recurrence_type (id),
