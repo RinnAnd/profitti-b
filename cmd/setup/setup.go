@@ -6,7 +6,8 @@ import (
 )
 
 type Setup struct {
-	UserHandler users.UserHandler
+	RegisterHandler users.RegisterHandler
+	LoginHandler    users.LoginHandler
 }
 
 func Build(db *sql.DB) *Setup {

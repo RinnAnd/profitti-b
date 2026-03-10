@@ -12,11 +12,11 @@ type handler struct {
 	srv users.UserService
 }
 
-type UserHandler interface {
+type RegisterHandler interface {
 	Register(c *gin.Context)
 }
 
-func NewUserHandler(srv users.UserService) UserHandler {
+func NewRegister(srv users.UserService) RegisterHandler {
 	return &handler{
 		srv: srv,
 	}

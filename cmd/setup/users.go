@@ -10,7 +10,9 @@ import (
 func User(db *sql.DB, stp *Setup) {
 	userRepository := user.New(db)
 	userService := service.New(userRepository)
-	userHandler := users.NewUserHandler(userService)
+	userHandler := users.NewRegister(userService)
+	loginHandler := users.NewLogin(userService)
 
-	stp.UserHandler = userHandler
+	stp.RegisterHandler = userHandler
+	stp.LoginHandler = loginHandler
 }

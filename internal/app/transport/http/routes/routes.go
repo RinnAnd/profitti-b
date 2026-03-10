@@ -7,11 +7,12 @@ import (
 )
 
 type Routes struct {
-	UserHandler users.UserHandler
+	RegisterHandler users.RegisterHandler
+	LoginHandler    users.LoginHandler
 }
 
 func (h *Routes) Init(s *gin.Engine) {
-	// Users
 	userGroup := s.Group("/users")
-	userGroup.POST("/register", h.UserHandler.Register)
+	userGroup.POST("/register", h.RegisterHandler.Register)
+	userGroup.POST("/login", h.LoginHandler.Login)
 }

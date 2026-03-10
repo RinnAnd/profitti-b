@@ -21,7 +21,8 @@ func main() {
 	setup := setup.Build(db)
 
 	rtr := routes.Routes{
-		UserHandler: setup.UserHandler,
+		RegisterHandler: setup.RegisterHandler,
+		LoginHandler:    setup.LoginHandler,
 	}
 
 	server := server.StartServer(os.Getenv("PORT"))

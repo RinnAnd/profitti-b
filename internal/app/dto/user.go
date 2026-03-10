@@ -24,3 +24,8 @@ type UserRes struct {
 	Email    string `json:"email"`
 	Profile  string `json:"profile"`
 }
+
+type Login struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
