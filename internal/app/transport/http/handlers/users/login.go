@@ -6,22 +6,22 @@ import (
 	"net/http"
 	"profitti/internal/app/dto"
 	"profitti/internal/core/domain"
-	"profitti/internal/infra/service/users"
+	"profitti/internal/core/usecases/login"
 
 	"github.com/gin-gonic/gin"
 )
 
 type lgnhandler struct {
-	srv users.UserService
+	usecase login.LoginUseCase
 }
 
 type LoginHandler interface {
 	Login(c *gin.Context)
 }
 
-func NewLogin(srv users.UserService) LoginHandler {
+func NewLogin(usecase login.LoginUseCase) LoginHandler {
 	return &lgnhandler{
-		srv: srv,
+		usecase: usecase,
 	}
 }
 
@@ -35,7 +35,7 @@ func (l *lgnhandler) Login(c *gin.Context) {
 		return
 	}
 
-	res, err := l.srv.FindOne(c, req.Email, req.Password)
+	res, err := l.usecase.Login(c, req.Email, req.Password)
 	if err != nil {
 		e := new(domain.CredentialsError)
 		if errors.As(err, &e) || errors.Is(err, sql.ErrNoRows) {
@@ -52,7 +52,23 @@ func (l *lgnhandler) Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusAccepted, res)
+	token, err := l.usecase.GenToken(res)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, dto.HttpError{
+			Status:  http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	c.Header("access_token", token)
+
+	c.JSON(http.StatusAccepted, dto.UserRes{
+		Id:       res.Id,
+		Username: res.Username,
+		Email:    res.Email,
+		Profile:  res.Profile,
+	})
 }
 
 func decodeLoginRq(c *gin.Context) (*dto.Login, error) {
