@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"profitti/internal/core/domain"
+	"sort"
 )
 
 type Partnership interface {
@@ -26,6 +27,9 @@ func New(db *sql.DB) Partnership {
 
 func (r *repository) Insert(ctx context.Context, p *domain.Partnership) (string, error) {
 	var target string
+
+	sort.Strings(p.Users)
+
 	users := map[string][]string{
 		"users": p.Users,
 	}
