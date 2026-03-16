@@ -27,6 +27,8 @@ func main() {
 		GetFinancialsByUserHandler: setup.GetFinancialsByUserHandler,
 		CreateExpenseHandler:       setup.CreateExpenseHandler,
 		GetExpensesByUserHandler:   setup.GetExpensesByUserHandler,
+		CreatePartnership:          setup.CreatePartnership,
+		GetPartnerships:            setup.GetPartnerships,
 	}
 
 	server := server.StartServer(os.Getenv("PORT"))

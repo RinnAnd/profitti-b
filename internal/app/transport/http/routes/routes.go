@@ -3,6 +3,7 @@ package routes
 import (
 	"profitti/internal/app/transport/http/handlers/expenses"
 	"profitti/internal/app/transport/http/handlers/financials"
+	"profitti/internal/app/transport/http/handlers/partnership"
 	"profitti/internal/app/transport/http/handlers/users"
 
 	"github.com/gin-gonic/gin"
@@ -18,6 +19,9 @@ type Routes struct {
 	// Expenses
 	CreateExpenseHandler     expenses.CreateHandler
 	GetExpensesByUserHandler expenses.GetByUserHandler
+	// Partnerships
+	CreatePartnership partnership.CreateHandler
+	GetPartnerships   partnership.GetHandler
 }
 
 func (h *Routes) Init(s *gin.Engine) {
@@ -33,4 +37,8 @@ func (h *Routes) Init(s *gin.Engine) {
 	expenseGroup := s.Group("/expenses")
 	expenseGroup.POST("/create", h.CreateExpenseHandler.Create)
 	expenseGroup.GET("/user/:id", h.GetExpensesByUserHandler.GetByUser)
+	// Partnerships
+	partnershipGroup := s.Group("/partnership")
+	partnershipGroup.POST("/create", h.CreatePartnership.Create)
+	partnershipGroup.GET("/:id", h.GetPartnerships.GetPartnerships)
 }
