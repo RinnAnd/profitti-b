@@ -20,7 +20,7 @@ type FinancialRes struct {
 	Msg string
 }
 
-type Create struct {
+type CreateFinancial struct {
 	UserId     string `json:"user_id"`
 	CurrencyId string `json:"currency_id"`
 }

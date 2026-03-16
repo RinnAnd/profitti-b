@@ -19,5 +19,5 @@ func Financials(db *sql.DB, stp *Setup) {
 	getByUserHandler := handler.NewGetByUser(getByUserUseCase)
 
 	stp.CreateFinancialHandler = createHandler
-	stp.GetByUserHandler = getByUserHandler
+	stp.GetFinancialsByUserHandler = getByUserHandler
 }
