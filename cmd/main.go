@@ -24,7 +24,9 @@ func main() {
 		RegisterHandler:            setup.RegisterHandler,
 		LoginHandler:               setup.LoginHandler,
 		CreateFinancialHandler:     setup.CreateFinancialHandler,
-		GetFinancialsByUserHandler: setup.GetByUserHandler,
+		GetFinancialsByUserHandler: setup.GetFinancialsByUserHandler,
+		CreateExpenseHandler:       setup.CreateExpenseHandler,
+		GetExpensesByUserHandler:   setup.GetExpensesByUserHandler,
 	}
 
 	server := server.StartServer(os.Getenv("PORT"))
