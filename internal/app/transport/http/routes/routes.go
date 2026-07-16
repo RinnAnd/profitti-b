@@ -23,7 +23,7 @@ type Routes struct {
 	GetCategories              categories.GetHandler
 }
 
-// ADD FRIENDSHIPS, ADD CHARGE NOTIFICATIONS, MAYBE BUDGETS OR INCOMES
+// ADD CHARGE NOTIFICATIONS
 
 func (h *Routes) Init(s *gin.Engine) {
 	s.POST("/users/register", h.RegisterHandler.Register)
