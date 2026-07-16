@@ -4,10 +4,12 @@ import (
 	"context"
 	"profitti/internal/core/domain"
 	"profitti/internal/infra/service/partnership"
+	"profitti/internal/infra/service/users"
 )
 
 type usecases struct {
-	srv partnership.Service
+	srv    partnership.Service
+	usrsrv users.UserService
 }
 
 type UseCase interface {
@@ -15,26 +17,27 @@ type UseCase interface {
 	GetByUser(context.Context, string) ([]*domain.Partnership, error)
 }
 
-func New(srv partnership.Service) UseCase {
+func New(srv partnership.Service, usrsrv users.UserService) UseCase {
 	return &usecases{
-		srv: srv,
+		srv:    srv,
+		usrsrv: usrsrv,
 	}
 }
 
 func (u *usecases) Create(ctx context.Context, p *domain.Partnership) (string, error) {
-	res, err := u.srv.Create(ctx, p)
-	if err != nil {
-		return "", err
+	for _, user := range p.Users {
+		if !u.usrsrv.CheckOne(ctx, user) {
+			return "", domain.User404
+		}
 	}
 
-	return res, nil
+	return u.srv.Create(ctx, p)
 }
 
 func (u *usecases) GetByUser(ctx context.Context, id string) ([]*domain.Partnership, error) {
-	res, err := u.srv.GetPartnerships(ctx, id)
-	if err != nil {
-		return nil, err
+	if u.usrsrv.CheckOne(ctx, id) {
+		return u.srv.GetPartnerships(ctx, id)
 	}
 
-	return res, nil
+	return nil, domain.User404
 }

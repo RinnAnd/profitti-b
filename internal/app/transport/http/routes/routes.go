@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"profitti/internal/app/transport/http/handlers/categories"
 	"profitti/internal/app/transport/http/handlers/expenses"
 	"profitti/internal/app/transport/http/handlers/financials"
 	"profitti/internal/app/transport/http/handlers/partnership"
@@ -10,35 +11,29 @@ import (
 )
 
 type Routes struct {
-	// Users
-	RegisterHandler users.RegisterHandler
-	LoginHandler    users.LoginHandler
-	// Financials
+	RegisterHandler            users.RegisterHandler
+	LoginHandler               users.LoginHandler
 	CreateFinancialHandler     financials.CreateHandler
 	GetFinancialsByUserHandler financials.GetByUserHandler
-	// Expenses
-	CreateExpenseHandler     expenses.CreateHandler
-	GetExpensesByUserHandler expenses.GetByUserHandler
-	// Partnerships
-	CreatePartnership partnership.CreateHandler
-	GetPartnerships   partnership.GetHandler
+	CreateExpenseHandler       expenses.CreateHandler
+	GetExpensesByUserHandler   expenses.GetByUserHandler
+	CreatePartnership          partnership.CreateHandler
+	GetPartnerships            partnership.GetHandler
+	CreateCategory             categories.Handler
+	GetCategories              categories.GetHandler
 }
 
+// ADD FRIENDSHIPS, ADD CHARGE NOTIFICATIONS, MAYBE BUDGETS OR INCOMES
+
 func (h *Routes) Init(s *gin.Engine) {
-	// Users
-	userGroup := s.Group("/users")
-	userGroup.POST("/register", h.RegisterHandler.Register)
-	userGroup.POST("/login", h.LoginHandler.Login)
-	// Financials
-	financialGroup := s.Group("/financials")
-	financialGroup.POST("/create", h.CreateFinancialHandler.Create)
-	financialGroup.GET("/user/:id", h.GetFinancialsByUserHandler.GetByUser)
-	// Expenses
-	expenseGroup := s.Group("/expenses")
-	expenseGroup.POST("/create", h.CreateExpenseHandler.Create)
-	expenseGroup.GET("/user/:id", h.GetExpensesByUserHandler.GetByUser)
-	// Partnerships
-	partnershipGroup := s.Group("/partnership")
-	partnershipGroup.POST("/create", h.CreatePartnership.Create)
-	partnershipGroup.GET("/:id", h.GetPartnerships.GetPartnerships)
+	s.POST("/users/register", h.RegisterHandler.Register)
+	s.POST("/users/login", h.LoginHandler.Login)
+	s.POST("/financials/create", h.CreateFinancialHandler.Create)
+	s.GET("/financials/user", h.GetFinancialsByUserHandler.GetByUser)
+	s.POST("/expenses/create", h.CreateExpenseHandler.Create)
+	s.GET("/expenses/user", h.GetExpensesByUserHandler.GetByUser)
+	s.POST("/partnership/create", h.CreatePartnership.Create)
+	s.GET("/partnership", h.GetPartnerships.GetPartnerships)
+	s.POST("/category", h.CreateCategory.Post)
+	s.GET("/category", h.GetCategories.Get)
 }

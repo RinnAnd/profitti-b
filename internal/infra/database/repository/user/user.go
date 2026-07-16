@@ -9,6 +9,7 @@ import (
 type UserRepo interface {
 	InsertOne(context.Context, *domain.User) (string, error)
 	SelectOne(context.Context, string) (*domain.User, error)
+	CheckOne(context.Context, string) bool
 }
 
 type repo struct {
@@ -49,4 +50,16 @@ func (u *repo) SelectOne(ctx context.Context, email string) (*domain.User, error
 		return nil, err
 	}
 	return &target, nil
+}
+
+func (u *repo) CheckOne(ctx context.Context, id string) bool {
+	err := u.db.QueryRowContext(ctx, `
+		SELECT id FROM users WHERE id = $1
+	`, id).Scan(&id)
+
+	if err != nil {
+		return false
+	}
+
+	return true
 }

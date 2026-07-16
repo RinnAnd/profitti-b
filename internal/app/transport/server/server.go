@@ -1,14 +1,24 @@
 package server
 
-import "github.com/gin-gonic/gin"
+import (
+	"profitti/internal/app/middleware"
+	"profitti/internal/infra/service/auth"
+
+	"github.com/gin-gonic/gin"
+)
 
 type Server struct {
 	addr string
 	G    *gin.Engine
+	jwt  auth.JWT
 }
 
-func StartServer(addr string) *Server {
+func StartServer(addr string, jwt auth.JWT) *Server {
 	router := gin.Default()
+
+	authmidd := middleware.New(jwt)
+	router.Use(authmidd.CheckToken())
+
 	return &Server{
 		addr: addr,
 		G:    router,

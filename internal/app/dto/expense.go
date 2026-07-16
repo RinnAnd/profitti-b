@@ -1,46 +1,52 @@
 package dto
 
-import "profitti/internal/core/domain"
+import (
+	"profitti/internal/core/domain"
+)
 
 type Expense struct {
 	Id                 string   `json:"id"`
-	Financial_id       *string  `json:"financial_id,omitempty"`
-	Partnership_id     *string  `json:"partnership_id,omitempty"`
-	Name               string   `json:"name" validate:"required"`
-	Description        *string  `json:"description,omitempty"`
-	Amount             float64  `json:"amount" validate:"required"`
+	FinancialId        *string  `json:"financial_id,omitempty"`
+	PartnershipId      *string  `json:"partnership_id,omitempty"`
+	Name               string   `json:"name"`
+	Description        string   `json:"description,omitempty"`
+	Amount             float64  `json:"amount"`
+	Category           *string  `json:"category"`
 	Expense_recurrence *string  `json:"expense_recurrence,omitempty"`
 	Expiration_date    *string  `json:"expiration_date,omitempty"`
-	Currency_id        string   `json:"currency_id" validate:"required"`
-	Currency           *string  `json:"currency,omitempty"`
-	SharedPercentage   *float64 `json:"sharedPercentage,omitempty"`
-	SharedCurrency     *string  `json:"sharedCurrency,omitempty"`
+	Currency           Currency `json:"currency"`
+	CreatedAt          string   `json:"created_at"`
 }
 
-func (f *Expense) Domain() *domain.Expense {
+func (e *CreateExpense) Domain() *domain.Expense {
 	return &domain.Expense{
-		Id:                 f.Id,
-		Financial_id:       f.Financial_id,
-		Partnership_id:     f.Partnership_id,
-		Name:               f.Name,
-		Description:        f.Description,
-		Amount:             f.Amount,
-		Expense_recurrence: f.Expense_recurrence,
-		Expiration_date:    f.Expiration_date,
-		Currency_id:        f.Currency_id,
-		SharedPercentage:   f.SharedPercentage,
+		FinancialId:        e.FinancialId,
+		PartnershipId:      e.PartnershipId,
+		Name:               e.Name,
+		Description:        e.Description,
+		Amount:             e.Amount,
+		Category:           e.CategoryId,
+		Expense_recurrence: e.Expense_recurrence,
+		Expiration_date:    e.Expiration_date,
+		CurrencyId:         e.CurrencyId,
 	}
 }
 
+type Currency struct {
+	Id       int    `json:"id" validate:"required"`
+	Currency string `json:"currency,omitempty"`
+}
+
 type CreateExpense struct {
-	Financial_id       *string `json:"financial_id"`
-	Partnership_id     *string `json:"partnership_id"`
+	FinancialId        *string `json:"financial_id,omitempty"`
+	PartnershipId      *string `json:"partnership_id,omitempty"`
 	Name               string  `json:"name"`
-	Description        *string `json:"description"`
-	Amount             int     `json:"amount"`
-	Expense_recurrence *string `json:"expense_recurrence"`
+	Description        string  `json:"description"`
+	Amount             float64 `json:"amount"`
+	CategoryId         *string `json:"category_id"`
+	Expense_recurrence *string `json:"expense_recurrence,omitempty"`
 	Expiration_date    *string `json:"expiration_date"`
-	Currency_id        string  `json:"currency_id"`
+	CurrencyId         int     `json:"currency_id"`
 }
 
 type CreateExpenseRes struct {
@@ -48,5 +54,5 @@ type CreateExpenseRes struct {
 }
 
 type GetExpensesByUserRes struct {
-	Expenses []*domain.Expense `json:"expenses"`
+	Expenses []*Expense `json:"expenses"`
 }

@@ -1,8 +1,11 @@
 package expenses
 
 import (
+	"errors"
 	"net/http"
 	"profitti/internal/app/dto"
+	"profitti/internal/app/util"
+	"profitti/internal/core/domain"
 	"profitti/internal/core/usecases/expenses"
 
 	"github.com/gin-gonic/gin"
@@ -24,22 +27,55 @@ func NewGetByUser(u expenses.GetByUserUseCase) GetByUserHandler {
 }
 
 func (h *getByUserUseCase) GetByUser(c *gin.Context) {
-	id := c.Param("id")
-	if !isValidUUID(id) {
-		c.JSON(http.StatusBadRequest, dto.HttpError{
-			Status:  http.StatusBadRequest,
-			Message: "Invalid user id",
+	id, err := util.GetId(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, dto.HttpError{
+			Status:  http.StatusUnauthorized,
+			Message: err.Error(),
 		})
+		return
 	}
+
 	res, err := h.u.GetExpensesByUser(c, id)
 	if err != nil {
+		if errors.Is(err, domain.User404) {
+			c.JSON(http.StatusNotFound, dto.HttpError{
+				Status:  http.StatusNotFound,
+				Message: err.Error(),
+			})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, dto.HttpError{
 			Status:  http.StatusInternalServerError,
 			Message: err.Error(),
 		})
+		return
 	}
 	c.JSON(http.StatusOK, dto.GetExpensesByUserRes{
-		Expenses: res,
+		Expenses: func() []*dto.Expense {
+			expenses := []*dto.Expense{}
+			for _, exp := range res {
+				expense := &dto.Expense{
+					Id:                 exp.Id,
+					FinancialId:        exp.FinancialId,
+					PartnershipId:      exp.PartnershipId,
+					Name:               exp.Name,
+					Description:        exp.Description,
+					Amount:             exp.Amount,
+					Category:           exp.Category,
+					Expense_recurrence: exp.Expense_recurrence,
+					Expiration_date:    exp.Expiration_date,
+					Currency: dto.Currency{
+						Id:       exp.CurrencyId,
+						Currency: "COP",
+					},
+					CreatedAt: exp.CreatedAt,
+				}
+
+				expenses = append(expenses, expense)
+			}
+			return expenses
+		}(),
 	})
 }
 

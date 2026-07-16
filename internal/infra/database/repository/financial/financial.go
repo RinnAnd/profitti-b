@@ -46,5 +46,8 @@ func (f *repo) SelectUserFinancials(ctx context.Context, id string) ([]*domain.F
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
+	if len(target) == 0 {
+		return nil, sql.ErrNoRows
+	}
 	return target, nil
 }

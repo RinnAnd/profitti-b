@@ -4,7 +4,7 @@ import "profitti/internal/core/domain"
 
 type PartnershipRq struct {
 	Users      []string `json:"users"`
-	CurrencyId string   `json:"currency_id"`
+	CurrencyId int      `json:"currency_id"`
 }
 
 func (p *PartnershipRq) Domain() *domain.Partnership {
@@ -26,5 +26,5 @@ type PartnershipsRs struct {
 type Partnership struct {
 	Id         string   `json:"id"`
 	Users      []string `json:"users"`
-	CurrencyId string   `json:"currency_id"`
+	CurrencyId int      `json:"currency_id"`
 }

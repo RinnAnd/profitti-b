@@ -3,6 +3,7 @@ package financials
 import (
 	"net/http"
 	"profitti/internal/app/dto"
+	"profitti/internal/app/util"
 	"profitti/internal/core/usecases/financials"
 
 	"github.com/gin-gonic/gin"
@@ -23,6 +24,15 @@ func NewCreate(uc financials.CreateUseCase) CreateHandler {
 }
 
 func (h *createHandler) Create(c *gin.Context) {
+	id, err := util.GetId(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, dto.HttpError{
+			Status:  http.StatusUnauthorized,
+			Message: err.Error(),
+		})
+		return
+	}
+
 	req, err := decodeRequest(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, dto.HttpError{
@@ -31,7 +41,11 @@ func (h *createHandler) Create(c *gin.Context) {
 		})
 		return
 	}
-	res, err := h.usecase.CreateFinancial(c, req.Domain())
+
+	dom := req.Domain()
+	dom.UserId = id
+
+	res, err := h.usecase.CreateFinancial(c, dom)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dto.HttpError{
 			Status:  http.StatusInternalServerError,
@@ -42,8 +56,8 @@ func (h *createHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, res)
 }
 
-func decodeRequest(c *gin.Context) (*dto.Financial, error) {
-	req := &dto.Financial{}
+func decodeRequest(c *gin.Context) (*dto.CreateFinancial, error) {
+	req := &dto.CreateFinancial{}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		return nil, err
 	}

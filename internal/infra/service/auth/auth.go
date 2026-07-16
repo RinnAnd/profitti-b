@@ -29,10 +29,10 @@ func (a *auth) GenAccessToken(user *domain.User) (string, error) {
 	expiration := time.Now().Add(a.ttl)
 
 	claims := jwt.MapClaims{
-		"username": user.Username,
-		"email":    user.Email,
-		"exp":      expiration.Unix(),
-		"iat":      time.Now().Unix(),
+		"id":    user.Id,
+		"email": user.Email,
+		"exp":   expiration.Unix(),
+		"iat":   time.Now().Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

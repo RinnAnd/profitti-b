@@ -11,6 +11,7 @@ import (
 type UserService interface {
 	Register(context.Context, *domain.User) (string, error)
 	FindOne(context.Context, string, string) (*domain.User, error)
+	CheckOne(context.Context, string) bool
 }
 
 type service struct {
@@ -47,6 +48,10 @@ func (s *service) FindOne(ctx context.Context, email, password string) (*domain.
 	}
 
 	return res, nil
+}
+
+func (s *service) CheckOne(ctx context.Context, id string) bool {
+	return s.repo.CheckOne(ctx, id)
 }
 
 func HashPassword(password *string) error {

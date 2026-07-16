@@ -1,8 +1,10 @@
 package partnership
 
 import (
+	"errors"
 	"net/http"
 	"profitti/internal/app/dto"
+	"profitti/internal/app/util"
 	"profitti/internal/core/domain"
 	"profitti/internal/core/usecases/partnership"
 
@@ -24,10 +26,24 @@ func NewGet(useCase partnership.UseCase) GetHandler {
 }
 
 func (g *gethandler) GetPartnerships(c *gin.Context) {
-	id := c.Param("id")
+	id, err := util.GetId(c)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, dto.HttpError{
+			Status:  http.StatusUnauthorized,
+			Message: err.Error(),
+		})
+		return
+	}
 
 	res, err := g.useCase.GetByUser(c, id)
 	if err != nil {
+		if errors.Is(err, domain.User404) {
+			c.JSON(http.StatusNotFound, dto.HttpError{
+				Status:  http.StatusNotFound,
+				Message: err.Error(),
+			})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, dto.HttpError{
 			Status:  http.StatusInternalServerError,
 			Message: err.Error(),

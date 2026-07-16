@@ -46,8 +46,8 @@ func (h *createHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, createRes)
 }
 
-func decodeRequest(c *gin.Context) (*dto.Expense, error) {
-	req := &dto.Expense{}
+func decodeRequest(c *gin.Context) (*dto.CreateExpense, error) {
+	req := &dto.CreateExpense{}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		return nil, err
 	}

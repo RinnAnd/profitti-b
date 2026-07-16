@@ -4,7 +4,7 @@ import "profitti/internal/core/domain"
 
 type User struct {
 	Username string `json:"username"`
-	Email    string `json:"email"`
+	Email    string `json:"email" binding:"email"`
 	Password string `json:"password"`
 	Profile  string `json:"profile"`
 }
